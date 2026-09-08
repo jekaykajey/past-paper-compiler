@@ -5,9 +5,14 @@ Problem Statement: Solving past papers is a common way to prepare for upcoming e
 
 Features: You can compile and generate worksheets based on multiple criteria such as topic, year, variant, total marks, etc.
 
-System Architecture:
-The Past Paper Compiler uses an AI-assisted indexing pipeline and real-time query engine:
-1. AI Ingestion & Tagging: Past paper clips from hosted sources are processed via an AI classification API to automatically extract topic tags, mark allocations, and confidence scores.
-2. Metadata Indexing: Extracted metadata and file URLs are structured and saved into a database (PostgreSQL/SQLite).
-3. Real-time Filtering: Student criteria selections (topic, year range, marks) trigger SQL queries against the indexed metadata.
-4. On-demand Compilation: A PDF generator engine fetches matching question clips and stitches them into a custom, printable revision worksheet alongside its mark scheme.
+## System Architecture
+The Past Paper Compiler operates via a two-stage pipeline: an offline data ingestion engine and a real-time compilation engine.
+
+### 1. Ingestion Pipeline (Data Indexing)
+1. **Fetch**: Scrapes raw past paper PDFs directly from online web servers.
+2. **Parse**: Reads and parses PDF pages to extract raw question segments.
+3. **Classify**: Passes extracted question data to an AI API to analyze and tag each question with its topic, year, variant, component, and mark allocation.
+4. **Index**: Stores the categorized metadata and question URLs directly into the relational database.
+
+### 2. Runtime Engine (Worksheet Generation)
+5. **Compile**: Queries the database based on user-selected criteria and stitches the matching question clips into a customized PDF worksheet.
