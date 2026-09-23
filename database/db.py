@@ -7,13 +7,25 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+def get_db_connection():
+    # Connect to PostgreSQL using psycopg2.connect(DATABASE_URL)
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+    except Exception as e:
+        print(f"Error connecting to the database: {e}")
+        raise
+    return conn
+
 def init_db():
-    # 1. Connect to PostgreSQL using psycopg2.connect(DATABASE_URL)
-    conn = psycopg2.connect(DATABASE_URL)
-    # 2. Open 'database/schema.sql' and read its contents
-    # 3. Use cursor.execute() to run the SQL commands
-    # 4. Commit changes and close the connection
-    pass
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    with open("database/schema.sql", "r") as f:
+        cursor.execute(f.read())
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 if __name__ == "__main__":
     init_db()
